@@ -126,16 +126,14 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
     if (!isAuthor) {
       return res.status(400).json('you are not the author');
     }
-    await postDoc.update({
-      title,
-      summary,
-      content,
-      cover: newPath ? newPath : postDoc.cover,
-    });
+    postDoc.title = title;
+    postDoc.summary = summary;
+    postDoc.content = content;
+    postDoc.cover = newPath || postDoc.cover;
+    await postDoc.save();
 
     res.json(postDoc);
   });
-
 });
 
 app.delete('/post/:id', async (req, res) => {
