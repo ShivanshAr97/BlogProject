@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 export default function Post({_id,title,summary,cover,content,createdAt,author}) {
 
   return (
-    <div className="flex my-12 border rounded-xl">
+    <div className="flex mx-24 mt-28 mb-12 border rounded-xl items-center">
       <div className="w-[40%]">
         <Link to={`/post/${_id}`}>
           <img className="w-[90%] bg-blue-100 h-60 object-contain border rounded-2xl" src={'http://localhost:4000/'+cover} alt=""/>

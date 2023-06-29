@@ -17,13 +17,13 @@ export default function RegisterPage() {
     }
   }
   return (
-    <form className="mx-24" onSubmit={register}>
+    <form className="mx-40 my-32" onSubmit={register}>
       <h1 className="text-4xl my-8 justify-center flex font-bold">Register</h1>
-      <input className=" outline-none px-4 py-2 rounded-xl my-4" type="text"
+      <input className=" outline-none px-4 py-2 rounded-xl my-2 border-2 w-[80%] flex mx-auto" type="text"
         placeholder="Username"
         value={username}
         onChange={ev => setUsername(ev.target.value)} />
-      <input className=" outline-none px-4 py-2 rounded-xl my-4" type="password"
+      <input className="outline-none px-4 py-2 rounded-xl my-4 border-2 w-[80%] flex mx-auto" type="password"
         placeholder="Password"
         value={password}
         onChange={ev => setPassword(ev.target.value)} />

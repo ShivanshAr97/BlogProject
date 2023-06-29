@@ -1,17 +1,17 @@
-import {useEffect, useState} from "react";
-import {Navigate, useParams} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Navigate, useParams } from "react-router-dom";
 import Editor from "../Editor";
 
 export default function EditPost() {
-  const {id} = useParams();
-  const [title,setTitle] = useState('');
-  const [summary,setSummary] = useState('');
-  const [content,setContent] = useState('');
+  const { id } = useParams();
+  const [title, setTitle] = useState('');
+  const [summary, setSummary] = useState('');
+  const [content, setContent] = useState('');
   const [files, setFiles] = useState('');
-  const [redirect,setRedirect] = useState(false);
+  const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:4000/post/'+id)
+    fetch('http://localhost:4000/post/' + id)
       .then(response => {
         response.json().then(postInfo => {
           setTitle(postInfo.title);
@@ -42,23 +42,27 @@ export default function EditPost() {
   }
 
   if (redirect) {
-    return <Navigate to={'/post/'+id} />
+    return <Navigate to={'/post/' + id} />
   }
 
   return (
-    <form onSubmit={updatePost}>
-      <input className="text-2xl outline-none px-4 py-2 rounded-xl my-4" type="title"
-             placeholder={'Title'}
-             value={title}
-             onChange={ev => setTitle(ev.target.value)} />
-      <input className="outline-none px-4 py-2 rounded-xl my-4" type="summary"
-             placeholder={'Summary'}
-             value={summary}
-             onChange={ev => setSummary(ev.target.value)} />
-      <input className="outline-none px-4 py-2 rounded-xl my-4" type="file"
-             onChange={ev => setFiles(ev.target.files)} />
-      <Editor onChange={setContent} value={content} />
-      <button className="w-fit px-8 py-2 rounded-full bg-blue-800 text-white font-medium flex mx-auto my-4 text-lg">Update post</button>
-    </form>
+    <>
+      <h1 className="text-4xl mt-28 justify-center flex font-bold">Edit {title}</h1>
+
+      <form onSubmit={updatePost} className="my-4 flex flex-col mx-20">
+        <input className="text-2xl outline-none px-4 py-2 rounded-xl my-4 border-2 " type="title"
+          placeholder={'Title'}
+          value={title}
+          onChange={ev => setTitle(ev.target.value)} />
+        <input className="outline-none px-4 py-2 rounded-xl my-4 border-2 " type="summary"
+          placeholder={'Summary'}
+          value={summary}
+          onChange={ev => setSummary(ev.target.value)} />
+        <input className="outline-none px-4 py-2 rounded-xl my-4 border-2 " type="file"
+          onChange={ev => setFiles(ev.target.files)} />
+        <Editor onChange={setContent} value={content} />
+        <button className="w-fit px-8 py-2 rounded-full bg-blue-800 text-white font-medium flex mx-auto my-4 text-lg">Update post</button>
+      </form>
+    </>
   );
 }

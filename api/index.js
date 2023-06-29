@@ -9,7 +9,6 @@ const cookieParser = require('cookie-parser');
 
 const multer = require('multer');
 const uploadMiddleware = multer({ dest: 'uploads/' });
-
 const app = express();
 const fs = require('fs');
 

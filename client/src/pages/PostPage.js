@@ -56,13 +56,14 @@ export default function PostPage() {
 
 
   return (
-    <div className="">
-      <div className="flex justify-between">
-        <h1 className="text-6xl font-bold">{postInfo.title}</h1>
+    <div className="mt-28 mx-20">
+      <div className="flex justify-between items-center">
+        <h1 className="text-5xl font-bold">{postInfo.title}</h1>
         <div className="flex items-center">
-          <Link to={`/edit/${postInfo._id}`}> <span className="w-60"><AiOutlineEdit size="40px" /></span></Link>
+          <Link to={`/edit/${postInfo._id}`}> <AiOutlineEdit size="32px" /></Link>
+          <div className="mx-2"></div>
           <button className="text-red-700" onClick={deletePost} disabled={loading}>
-            {loading ? 'Deleting...' : <AiOutlineDelete size="20px" />}
+            {loading ? 'Deleting...' : <AiOutlineDelete size="28px" />}
           </button>
         </div>
       </div>
