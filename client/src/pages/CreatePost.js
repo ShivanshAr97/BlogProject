@@ -48,7 +48,7 @@ export default function CreatePost() {
       className="outline-none px-4 py-2 rounded-xl my-2 border-2"
         onChange={ev => setFiles(ev.target.files)} />
       <Editor value={content} onChange={setContent} />
-      <button className="w-fit px-8 py-2 rounded-full bg-blue-800 text-white font-medium flex mx-auto my-2 text-lg">Create post</button>
+      <button className="w-fit px-8 py-2 rounded-full bg-blue-800 text-white font-medium flex mx-auto my-2 text-lg">Create Post</button>
     </form>
     </>
   );

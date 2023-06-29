@@ -26,7 +26,7 @@ export default function Header() {
   const username = userInfo?.username;
 
   return (
-    <header className="flex justify-between w-[100%] px-20 py-4 bg-white align-middle border-b shadow-lg fixed top-0 right-0">
+    <header className="flex z-50 justify-between w-[100%] px-20 py-4 bg-white align-middle border-b shadow-lg fixed top-0 right-0">
       <Link to="/" className="text-4xl font-bold text-blue-600">BlogChain</Link>
       <nav className="flex">
         {username && (

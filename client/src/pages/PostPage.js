@@ -59,13 +59,15 @@ export default function PostPage() {
     <div className="mt-28 mx-20">
       <div className="flex justify-between items-center">
         <h1 className="text-5xl font-bold">{postInfo.title}</h1>
-        <div className="flex items-center">
-          <Link to={`/edit/${postInfo._id}`}> <AiOutlineEdit size="32px" /></Link>
-          <div className="mx-2"></div>
-          <button className="text-red-700" onClick={deletePost} disabled={loading}>
-            {loading ? 'Deleting...' : <AiOutlineDelete size="28px" />}
-          </button>
-        </div>
+        {userInfo.id === postInfo.author._id && (
+          <div className="flex items-center">
+            <Link to={`/edit/${postInfo._id}`}> <AiOutlineEdit size="32px" /></Link>
+            <div className="mx-2"></div>
+            <button className="text-red-700" onClick={deletePost} disabled={loading}>
+              {loading ? 'Deleting...' : <AiOutlineDelete size="28px" />}
+            </button>
+          </div>
+        )}
       </div>
       <div className="flex justify-between my-4">
         <div className="text-xl font-medium text-gray-500">By @{postInfo.author.username}</div>

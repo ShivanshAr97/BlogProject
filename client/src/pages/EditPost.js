@@ -61,7 +61,7 @@ export default function EditPost() {
         <input className="outline-none px-4 py-2 rounded-xl my-4 border-2 " type="file"
           onChange={ev => setFiles(ev.target.files)} />
         <Editor onChange={setContent} value={content} />
-        <button className="w-fit px-8 py-2 rounded-full bg-blue-800 text-white font-medium flex mx-auto my-4 text-lg">Update post</button>
+        <button className="w-fit px-8 py-2 rounded-full bg-blue-800 text-white font-medium flex mx-auto my-4 text-lg">Update Post</button>
       </form>
     </>
   );
