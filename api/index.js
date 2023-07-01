@@ -99,28 +99,37 @@ app.post('/register', async (req, res) => {
   }
 });
 
+
 // app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
-//   const { originalname, path } = req.file;
-//   const parts = originalname.split('.');
-//   const ext = parts[parts.length - 1];
-//   const newPath = path + '.' + ext;
-//   fs.renameSync(path, newPath);
+//   try {
+//     const { originalname, path } = req.file;
+//     const parts = originalname.split('.');
+//     const ext = parts[parts.length - 1];
+//     const newPath = path + '.' + ext;
+//     fs.renameSync(path, newPath);
 
-//   const { token } = req.cookies;
-//   jwt.verify(token, secret, {}, async (err, info) => {
-//     if (err) throw err;
-//     const { title, summary, content } = req.body;
-//     const postDoc = await Post.create({
-//       title,
-//       summary,
-//       content,
-//       cover: newPath,
-//       author: info.id,
-//     });
-//     res.json(postDoc);
-//   });
+//     const { token } = req.cookies;
+//     console.log(token);
+//     try {
+//       const info = jwt.verify(token, secret, {});
+//       const { title, summary, content } = req.body;
+//       const postDoc = await Post.create({
+//         title,
+//         summary,
+//         content,
+//         cover: newPath,
+//         author: info.id,
+//       });
+//       res.json(postDoc);
+//     } catch (err) {
+//       console.error('Error verifying JWT:', err);
+//       res.status(401).json({ error: 'Invalid token' });
+//     }
+//   } catch (err) {
+//     console.error('Error handling file:', err);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
 // });
-
 
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
   try {
@@ -130,28 +139,33 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
     const newPath = path + '.' + ext;
     fs.renameSync(path, newPath);
 
-    const { token } = req.cookies;
-    console.log('Token being verified:', token);
-    try {
-      const info = jwt.verify(token, secret, {});
-      const { title, summary, content } = req.body;
-      const postDoc = await Post.create({
-        title,
-        summary,
-        content,
-        cover: newPath,
-        author: info.id,
-      });
-      res.json(postDoc);
-    } catch (err) {
-      console.error('Error verifying JWT:', err);
-      res.status(401).json({ error: 'Invalid token' });
-    }
+    const { username, id: authorId } = req.user;
+    const tokenPayload = { username, id: authorId };
+
+    jwt.sign(tokenPayload, secret, {}, (err, token) => {
+      if (err) {
+        console.error('Error signing JWT:', err);
+        res.status(500).json({ error: 'Internal server error' });
+      } else {
+        res.cookie('token', token, {
+          // Specify any additional options for the cookie
+          // For example, you can set the cookie to be secure and HTTP-only
+          secure: true,
+          httpOnly: true,
+          // You can also set the cookie's expiration date
+          expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // Expires in 24 hours
+        }).json({
+          id: authorId,
+          username,
+        });
+      }
+    });
   } catch (err) {
     console.error('Error handling file:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 
 app.post('/logout', (req, res) => {
