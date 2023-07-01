@@ -3,7 +3,6 @@ const cors = require('cors');
 const mongoose = require("mongoose");
 
 require("dotenv").config()
-console.log(process.env.CORS)
 
 const User = require('./models/User');
 const Post = require('./models/Post');
@@ -131,6 +130,41 @@ app.post('/register', async (req, res) => {
 //   }
 // });
 
+// app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
+//   try {
+//     const { originalname, path } = req.file;
+//     const parts = originalname.split('.');
+//     const ext = parts[parts.length - 1];
+//     const newPath = path + '.' + ext;
+//     fs.renameSync(path, newPath);
+
+//     const { username, id: authorId } = req.user;
+//     const tokenPayload = { username, id: authorId };
+
+//     jwt.sign(tokenPayload, secret, {}, (err, token) => {
+//       if (err) {
+//         console.error('Error signing JWT:', err);
+//         res.status(500).json({ error: 'Internal server error' });
+//       } else {
+//         res.cookie('token', token, {
+//           // Specify any additional options for the cookie
+//           // For example, you can set the cookie to be secure and HTTP-only
+//           secure: true,
+//           httpOnly: true,
+//           // You can also set the cookie's expiration date
+//           expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // Expires in 24 hours
+//         }).json({
+//           id: authorId,
+//           username,
+//         });
+//       }
+//     });
+//   } catch (err) {
+//     console.error('Error handling file:', err);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
+
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
   try {
     const { originalname, path } = req.file;
@@ -139,32 +173,45 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
     const newPath = path + '.' + ext;
     fs.renameSync(path, newPath);
 
-    const { username, id: authorId } = req.user;
-    const tokenPayload = { username, id: authorId };
+    const { token } = req.cookies;
 
-    jwt.sign(tokenPayload, secret, {}, (err, token) => {
-      if (err) {
-        console.error('Error signing JWT:', err);
-        res.status(500).json({ error: 'Internal server error' });
-      } else {
-        res.cookie('token', token, {
-          // Specify any additional options for the cookie
-          // For example, you can set the cookie to be secure and HTTP-only
-          secure: true,
-          httpOnly: true,
-          // You can also set the cookie's expiration date
-          expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // Expires in 24 hours
-        }).json({
+    if (!token) {
+      return res.status(401).json({ error: 'Token not provided' });
+    }
+
+    try {
+      const info = jwt.verify(token, secret);
+      const { username, id: authorId } = info;
+
+      const postDoc = await Post.create({
+        title,
+        summary,
+        content,
+        cover: newPath,
+        author: authorId,
+      });
+
+      res.json({
+        id: postDoc._id,
+        title: postDoc.title,
+        summary: postDoc.summary,
+        content: postDoc.content,
+        cover: postDoc.cover,
+        author: {
           id: authorId,
           username,
-        });
-      }
-    });
+        },
+      });
+    } catch (err) {
+      console.error('Error verifying JWT:', err);
+      res.status(401).json({ error: 'Invalid token' });
+    }
   } catch (err) {
     console.error('Error handling file:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 
 
