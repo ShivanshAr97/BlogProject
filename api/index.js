@@ -2,6 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require("mongoose");
 
+require("dotenv").config()
+console.log(process.env.CORS)
+
 const User = require('./models/User');
 const Post = require('./models/Post');
 const jwt = require('jsonwebtoken');
