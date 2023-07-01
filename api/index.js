@@ -173,7 +173,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
     const newPath = path + '.' + ext;
     fs.renameSync(path, newPath);
 
-    const { token } = req.cookies;
+    const token = req.headers.authorization || req.cookies.token;
 
     if (!token) {
       return res.status(401).json({ error: 'Token not provided' });
@@ -211,7 +211,6 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
 
 
 
