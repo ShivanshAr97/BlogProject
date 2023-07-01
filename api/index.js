@@ -17,7 +17,7 @@ const fs = require('fs');
 
 const bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
-const secret = 'asdfe45we45w345wegw345werjktjwertkj';
+const secret = process.env.SECRET;
 
 app.use(cors({ credentials: true, origin: process.env.CORS }));
 
@@ -63,7 +63,7 @@ app.post('/login', async (req, res) => {
     //     id: userDoc._id,
     //     username,
     //   });
-    // });
+    // })
     try {
       jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
         if (err) {
