@@ -16,7 +16,7 @@ export default function PostPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   useEffect(() => {
-    fetch(`https://blog-backend-14ap.onrender.com/post/${id}`)
+    fetch(`http://localhost:4000/post/${id}`)
       .then(response => {
         response.json().then(postInfo => {
           setPostInfo(postInfo);
@@ -32,7 +32,7 @@ export default function PostPage() {
     setError(null);
     setSuccess(false);
 
-    fetch(`https://blog-backend-14ap.onrender.com/post/${id}`, {
+    fetch(`http://localhost:4000/post/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
@@ -79,7 +79,7 @@ export default function PostPage() {
           {success && <p>Post deleted successfully!</p>}
         </div>
       )}
-      <img className="border rounded-2xl mx-auto flex my-2" src={`https://blog-backend-14ap.onrender.com/${postInfo.cover}`} alt="" />
+      <img className="border rounded-2xl mx-auto flex my-2" src={`http://localhost:4000/${postInfo.cover}`} alt="" />
       <div className=" text-justify text-lg" dangerouslySetInnerHTML={{ __html: postInfo.content }} />
     </div>
   );
