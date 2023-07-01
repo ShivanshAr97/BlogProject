@@ -7,7 +7,7 @@ export default function Post({_id,title,summary,cover,content,createdAt,author})
     <div className="flex mx-24 mt-28 mb-12 border rounded-xl items-center">
       <div className="w-[40%]">
         <Link to={`/post/${_id}`}>
-          <img className="w-[90%] bg-blue-100 h-60 object-contain border rounded-2xl" src={'http://localhost:4000/'+cover} alt=""/>
+          <img className="w-[90%] bg-blue-100 h-60 object-contain border rounded-2xl" src={`${process.env.REACT_APP_CODE_URL}/`+cover} alt=""/>
         </Link>
       </div>
 
