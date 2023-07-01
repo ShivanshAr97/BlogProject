@@ -16,7 +16,7 @@ const bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+app.use(cors({ credentials: true, origin: 'https://blog-frontend-two-rho.vercel.app/' }));
 
 app.use(express.json());
 app.use(cookieParser());
