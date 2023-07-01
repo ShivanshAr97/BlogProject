@@ -176,12 +176,14 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
     const token = req.headers.authorization || req.cookies.token;
 
     if (!token) {
-      return res.status(401).json({ error: 'Token not provided' });
+      return res.status(401).json({ error: 'JWT token must be provided' });
     }
 
     try {
       const info = jwt.verify(token, secret);
       const { username, id: authorId } = info;
+
+      const { title, summary, content } = req.body;
 
       const postDoc = await Post.create({
         title,
