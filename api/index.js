@@ -69,6 +69,7 @@ app.post('/login', async (req, res) => {
         if (err) {
           throw err;
         }
+        console.log('Generated token:', token);
         res.cookie('token', token).json({
           id: userDoc._id,
           username,
@@ -130,6 +131,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
     fs.renameSync(path, newPath);
 
     const { token } = req.cookies;
+    console.log('Token being verified:', token);
     try {
       const info = jwt.verify(token, secret, {});
       const { title, summary, content } = req.body;
