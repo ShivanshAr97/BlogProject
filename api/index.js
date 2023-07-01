@@ -57,13 +57,28 @@ app.post('/login', async (req, res) => {
   const passOk = bcrypt.compareSync(password, userDoc.password);
   if (passOk) {
     // logged in
-    jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
-      if (err) throw err;
-      res.cookie('token', token).json({
-        id: userDoc._id,
-        username,
+    // jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
+    //   if (err) throw err;
+    //   res.cookie('token', token).json({
+    //     id: userDoc._id,
+    //     username,
+    //   });
+    // });
+    try {
+      jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
+        if (err) {
+          throw err;
+        }
+        res.cookie('token', token).json({
+          id: userDoc._id,
+          username,
+        });
       });
-    });
+    } catch (err) {
+      console.error('Error signing JWT:', err);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+
   } else {
     res.status(400).json('wrong credentials');
   }
@@ -83,27 +98,59 @@ app.post('/register', async (req, res) => {
   }
 });
 
-app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
-  const { originalname, path } = req.file;
-  const parts = originalname.split('.');
-  const ext = parts[parts.length - 1];
-  const newPath = path + '.' + ext;
-  fs.renameSync(path, newPath);
+// app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
+//   const { originalname, path } = req.file;
+//   const parts = originalname.split('.');
+//   const ext = parts[parts.length - 1];
+//   const newPath = path + '.' + ext;
+//   fs.renameSync(path, newPath);
 
-  const { token } = req.cookies;
-  jwt.verify(token, secret, {}, async (err, info) => {
-    if (err) throw err;
-    const { title, summary, content } = req.body;
-    const postDoc = await Post.create({
-      title,
-      summary,
-      content,
-      cover: newPath,
-      author: info.id,
-    });
-    res.json(postDoc);
-  });
+//   const { token } = req.cookies;
+//   jwt.verify(token, secret, {}, async (err, info) => {
+//     if (err) throw err;
+//     const { title, summary, content } = req.body;
+//     const postDoc = await Post.create({
+//       title,
+//       summary,
+//       content,
+//       cover: newPath,
+//       author: info.id,
+//     });
+//     res.json(postDoc);
+//   });
+// });
+
+
+app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
+  try {
+    const { originalname, path } = req.file;
+    const parts = originalname.split('.');
+    const ext = parts[parts.length - 1];
+    const newPath = path + '.' + ext;
+    fs.renameSync(path, newPath);
+
+    const { token } = req.cookies;
+    try {
+      const info = jwt.verify(token, secret, {});
+      const { title, summary, content } = req.body;
+      const postDoc = await Post.create({
+        title,
+        summary,
+        content,
+        cover: newPath,
+        author: info.id,
+      });
+      res.json(postDoc);
+    } catch (err) {
+      console.error('Error verifying JWT:', err);
+      res.status(401).json({ error: 'Invalid token' });
+    }
+  } catch (err) {
+    console.error('Error handling file:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
+
 
 app.post('/logout', (req, res) => {
   res.cookie('token', '').json('ok');
