@@ -4,6 +4,7 @@ import { AiOutlinePoweroff, AiOutlinePlusCircle } from 'react-icons/ai';
 import { UserContext } from "./UserContext";
 
 export default function Header() {
+  console.log(process.env.REACT_APP_CODE_URL);
   const { setUserInfo, userInfo } = useContext(UserContext);
   useEffect(() => {
     fetch(`${process.env.REACT_APP_CODE_URL}/profile`, {
